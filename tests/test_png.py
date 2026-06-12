@@ -1,4 +1,3 @@
-import struct
 from densegrid.png import write_png, read_png
 
 
