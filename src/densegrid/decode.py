@@ -1,6 +1,6 @@
 import zlib
 
-from densegrid.grid import get_data_pixels
+from densegrid.grid import GRID_SIZE, get_data_pixels
 from densegrid.header import unpack_header, HEADER_LENGTH
 from densegrid.pixel import decode_pixel
 from densegrid.png import read_png
@@ -13,13 +13,18 @@ def decode_file(input_path: str) -> bytes:
 
     pixels = read_png(png_data)
 
+    if len(pixels) != GRID_SIZE or len(pixels[0]) != GRID_SIZE:
+        raise ValueError(
+            f"Expected {GRID_SIZE}x{GRID_SIZE} grid, got {len(pixels[0])}x{len(pixels)}"
+        )
+
     data_pixels = get_data_pixels()
 
     header_pixel_values = []
     for r, c in data_pixels[:HEADER_LENGTH]:
         header_pixel_values.append(pixels[r][c])
 
-    payload_size, version, checksum, _, _ = unpack_header(header_pixel_values)
+    payload_size, version, checksum = unpack_header(header_pixel_values)
 
     body_pixels = data_pixels[HEADER_LENGTH:]
     bits = ""

@@ -14,12 +14,10 @@ def test_magic_value():
 def test_pack_unpack_roundtrip():
     payload = b"Hello, QR2!"
     header = pack_header(len(payload), FORMAT_VERSION, payload)
-    size, version, checksum, gw, gh = unpack_header(header)
+    size, version, checksum = unpack_header(header)
     assert size == len(payload)
     assert version == FORMAT_VERSION
     assert checksum == zlib.crc32(payload) & 0xFFFFFF
-    assert gw == 0
-    assert gh == 0
 
 
 def test_pack_header_length():
@@ -39,6 +37,6 @@ def test_unpack_magic():
 def test_large_payload_size():
     payload = b"\x00" * 100000
     header = pack_header(len(payload), 1, payload)
-    size, version, checksum, _, _ = unpack_header(header)
+    size, version, checksum = unpack_header(header)
     assert size == 100000
     assert checksum == zlib.crc32(payload) & 0xFFFFFF

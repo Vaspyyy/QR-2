@@ -30,7 +30,8 @@ def write_png(pixels: list[list[tuple[int, int, int]]]) -> bytes:
 
 
 def read_png(data: bytes) -> list[list[tuple[int, int, int]]]:
-    assert data[:8] == PNG_SIGNATURE
+    if data[:8] != PNG_SIGNATURE:
+        raise ValueError("Not a valid PNG file")
     pos = 8
     width = height = 0
     idat_data = b""
@@ -51,7 +52,8 @@ def read_png(data: bytes) -> list[list[tuple[int, int, int]]]:
     row_bytes = width * 3
     for y in range(height):
         offset = y * (row_bytes + 1)
-        assert raw[offset] == 0  # filter byte: None
+        if raw[offset] != 0:
+            raise ValueError(f"Unsupported PNG filter: {raw[offset]}")
         row = []
         for x in range(width):
             i = offset + 1 + x * 3

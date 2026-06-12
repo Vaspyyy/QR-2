@@ -36,11 +36,12 @@ def pack_header(payload_size: int, version: int, payload: bytes) -> list[tuple[i
     return [encode_pixel(v) for v in values]
 
 
-def unpack_header(pixels: list[tuple[int, int, int]]) -> tuple[int, int, int, int, int]:
+def unpack_header(pixels: list[tuple[int, int, int]]) -> tuple[int, int, int]:
     """Unpack 12 pixel tuples into header metadata.
 
-    Returns (payload_size, version, crc32_checksum, grid_width, grid_height).
-    grid_width and grid_height are 0 for default (square) grids.
+    Returns (payload_size, version, crc32_checksum).
+    CRC32 is truncated to 24 bits (low 24 bits of the 32-bit value)
+    due to the 4×6-bit pixel constraint.
     """
     values = [decode_pixel(p) for p in pixels]
 
@@ -52,4 +53,4 @@ def unpack_header(pixels: list[tuple[int, int, int]]) -> tuple[int, int, int, in
     version = (values[6] << 6) | values[7]
     checksum = (values[8] << 18) | (values[9] << 12) | (values[10] << 6) | values[11]
 
-    return payload_size, version, checksum, 0, 0
+    return payload_size, version, checksum
