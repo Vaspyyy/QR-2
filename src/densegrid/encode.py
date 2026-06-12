@@ -12,6 +12,12 @@ def encode_file(payload: bytes, output_path: str) -> None:
     header_pixels = data_pixels[:HEADER_LENGTH]
     body_pixels = data_pixels[HEADER_LENGTH:]
 
+    max_bytes = len(body_pixels) * 6 // 8
+    if len(payload) > max_bytes:
+        raise ValueError(
+            f"Payload too large: {len(payload)} bytes exceeds capacity of {max_bytes}"
+        )
+
     header = pack_header(len(payload), FORMAT_VERSION, payload)
 
     bits = _bytes_to_bits(payload)
