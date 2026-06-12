@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=80"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "densegrid"
+version = "0.1.0"
+description = "High-density 2D barcode format — QR²"
+requires-python = ">=3.14"
+
+[project.scripts]
+dgencode = "densegrid.cli:encode_main"
+dgdecode = "densegrid.cli:decode_main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
