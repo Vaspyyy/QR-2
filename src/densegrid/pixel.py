@@ -1,5 +1,3 @@
-LEVELS = (0, 85, 170, 255)
-
 
 def encode_pixel(n: int) -> tuple[int, int, int]:
     """Encode a 0–63 value into an (R, G, B) pixel using 4-level intensity."""
